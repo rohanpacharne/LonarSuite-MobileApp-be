@@ -3,6 +3,8 @@ package com.lonar.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Transient;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
  
@@ -106,9 +108,18 @@ public class LtExpExpenseHeaders extends WhoColumns implements Serializable
 	
 	private String valueName;
 	private String token;
+	
+	@Transient
+	private Long approvalId;
 
-	
-	
+	public Long getApprovalId() {
+		return approvalId;
+	}
+
+	public void setApprovalId(Long approvalId) {
+		this.approvalId = approvalId;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -542,7 +553,6 @@ public class LtExpExpenseHeaders extends WhoColumns implements Serializable
 		this.valueName = valueName;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "LtExpExpenseHeaders [expHeaderId=" + expHeaderId + ", expenseNumber=" + expenseNumber
@@ -559,10 +569,11 @@ public class LtExpExpenseHeaders extends WhoColumns implements Serializable
 				+ employeeName + ", vendorName=" + vendorName + ", expenseStatus=" + expenseStatus + ", email=" + email
 				+ ", deptName=" + deptName + ", stDate=" + stDate + ", enDate=" + enDate + ", subDate=" + subDate
 				+ ", draw=" + draw + ", start=" + start + ", length=" + length + ", columnNo=" + columnNo + ", sort="
-				+ sort + ", valueCode=" + valueCode + ", valueName=" + valueName + ", token=" + token
-				+ ", currency=" + currency + ", currencyCodeWithName=" + currencyCodeWithName + ", vendorAddr="
-				+ vendorAddr + "]";
+				+ sort + ", valueCode=" + valueCode + ", valueName=" + valueName + ", token=" + token + ", approvalId="
+				+ approvalId + ", currency=" + currency + ", currencyCodeWithName=" + currencyCodeWithName
+				+ ", vendorAddr=" + vendorAddr + "]";
 	}
+	
 
 	
 	

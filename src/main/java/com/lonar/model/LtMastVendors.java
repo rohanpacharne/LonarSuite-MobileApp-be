@@ -1,5 +1,7 @@
 package com.lonar.model;
 
+import java.util.Date;
+
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class LtMastVendors extends WhoColumns 
 {
-	
+	private Long userId;
 	private Long vendorId;
 	private String vendorCode;
 	private String vendorName;
@@ -56,8 +58,60 @@ public class LtMastVendors extends WhoColumns
 	@Transient
 	private String msmeCategoryValue;
 	
+	@Transient
+	private Long approvalId;
+	
+	@Transient
+	private String module;
+	
+	@Transient
+	private Date lastUpdateDate;
+	
+	@Transient
+	private Long employeeId;
 	
 	
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getModule() {
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module;
+	}
+
+	public Date getLastUpdateDate() {
+		return lastUpdateDate;
+	}
+
+	public void setLastUpdateDate(Date lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}
+
+	public Long getApprovalId() {
+		return approvalId;
+	}
+
+	public void setApprovalId(Long approvalId) {
+		this.approvalId = approvalId;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -310,20 +364,20 @@ public class LtMastVendors extends WhoColumns
 
 	@Override
 	public String toString() {
-		return "LtMastVendors [vendorId=" + vendorId + ", vendorCode=" + vendorCode + ", vendorName=" + vendorName
-				+ ", status=" + status + ", panNo=" + panNo + ", vendorType=" + vendorType + ", proprietorName="
-				+ proprietorName + ", divisionId=" + divisionId + ", initiatorId=" + initiatorId + ", remark=" + remark
-				+ ", primaryEmail=" + primaryEmail + ", registrationEmail=" + registrationEmail + ", msmSupplier="
-				+ msmSupplier + ", asnApprovalRequired=" + asnApprovalRequired + ", msmRegisterationNo="
-				+ msmRegisterationNo + ", msmeCategory=" + msmeCategory + ", vendorLocationType=" + vendorLocationType
-				+ ", companyId=" + companyId + ", companyCategory=" + companyCategory + ", imagePath=" + imagePath
-				+ ", businessNatureCode=" + businessNatureCode + ", token=" + token + ", divisionName=" + divisionName
-				+ ", initiatorName=" + initiatorName + ", message=" + message + ", CompanyName=" + CompanyName
-				+ ", vendorStatus=" + vendorStatus + ", vendorStatusCode=" + vendorStatusCode + ", businessNature="
-				+ businessNature + ", msmeCategoryValue=" + msmeCategoryValue + "]";
+		return "LtMastVendors [userId=" + userId + ", vendorId=" + vendorId + ", vendorCode=" + vendorCode
+				+ ", vendorName=" + vendorName + ", status=" + status + ", panNo=" + panNo + ", vendorType="
+				+ vendorType + ", proprietorName=" + proprietorName + ", divisionId=" + divisionId + ", initiatorId="
+				+ initiatorId + ", remark=" + remark + ", primaryEmail=" + primaryEmail + ", registrationEmail="
+				+ registrationEmail + ", msmSupplier=" + msmSupplier + ", asnApprovalRequired=" + asnApprovalRequired
+				+ ", msmRegisterationNo=" + msmRegisterationNo + ", msmeCategory=" + msmeCategory
+				+ ", vendorLocationType=" + vendorLocationType + ", companyId=" + companyId + ", companyCategory="
+				+ companyCategory + ", imagePath=" + imagePath + ", businessNatureCode=" + businessNatureCode
+				+ ", token=" + token + ", divisionName=" + divisionName + ", initiatorName=" + initiatorName
+				+ ", message=" + message + ", CompanyName=" + CompanyName + ", vendorStatus=" + vendorStatus
+				+ ", vendorStatusCode=" + vendorStatusCode + ", businessNature=" + businessNature
+				+ ", msmeCategoryValue=" + msmeCategoryValue + ", approvalId=" + approvalId + ", module=" + module
+				+ ", lastUpdateDate=" + lastUpdateDate + ", employeeId=" + employeeId + "]";
 	}
-	
-
 
 }
 

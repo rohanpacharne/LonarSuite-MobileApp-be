@@ -28,11 +28,17 @@ public class LtVendorServiceImpl implements LtVendorService,CodeMaster {
 	@Autowired
 	LtVendorDao ltVendorDao;
 	
+	@Autowired
+	LtNotificationService ltNotificationService;
+	
 	private final RestTemplate restTemplate = new RestTemplate();
 	long currentTimestamp = System.currentTimeMillis();
 
 	@Override
-	public LtMastVendors getVendorByVendorId(Long vendorId, String token) {
+	public ResponseEntity<LtMastVendors> getVendorByVendorId(Long vendorId, Long approvalId, String token) {
+		
+		boolean status = checkStatusIsPending(vendorId, approvalId, token);
+		
 		String apiUrl = lVendorMasterIp + "/lvendormaster/API/vendor/getvendorbyid/"
                 + vendorId + "/" + currentTimestamp;		
 		try {
@@ -51,7 +57,12 @@ public class LtVendorServiceImpl implements LtVendorService,CodeMaster {
 	                LtMastVendors.class
 	        );
 
-	        return response.getBody(); 
+	        HttpHeaders responseHeaders = new HttpHeaders();
+	        responseHeaders.set("checkStatusIsPending", String.valueOf(status));  // Add the status (true/false) as a header
+	        
+	        int res = ltNotificationService.updateReadFlag(vendorId, "VENDOR");
+	        
+	        return new ResponseEntity<>(response.getBody(), responseHeaders, HttpStatus.OK);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        throw new RuntimeException("Failed to fetch expense header: " + e.getMessage());
@@ -144,6 +155,36 @@ public class LtVendorServiceImpl implements LtVendorService,CodeMaster {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
+	@Override
+	public boolean checkStatusIsPending(Long vendorId, Long approvalId, String token) {
+		// TODO Auto-generated method stub
+		String apiUrl = lVendorMasterIp + "/lvendormaster/API/vendor/checkStatusIsPending/"+vendorId+ "/"+approvalId+"/"+currentTimestamp;
+		try {
+	        // Set up headers with the access token
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.set("access_token", token);  // Set the access token in the header
+	        headers.set("Content-Type", "application/json");
+
+	        // No request body required, so use HttpEntity with just headers
+	        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+	        // Make the API call
+	        ResponseEntity<Boolean> response = restTemplate.exchange(
+	            apiUrl,
+	            HttpMethod.GET,  // Use GET since your URL is structured for a GET request
+	            entity,
+	            Boolean.class  // Expecting a boolean response
+	        );
+
+	        // Return the response body directly (boolean value)
+	        return response.getBody() != null && response.getBody();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;  // Return false if an error occurs
 	    }
 	}
 

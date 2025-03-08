@@ -15,7 +15,7 @@ import com.lonar.model.VendorApproval;
 
 public interface LtVendorService {
 	
-	LtMastVendors getVendorByVendorId(Long long1, String token);
+	ResponseEntity<LtMastVendors> getVendorByVendorId(Long long1, Long approvalId, String token);
 	
 	Long getPendingCount(String status1, String approvalId, VendorApproval input) throws Exception;
 	
@@ -24,8 +24,8 @@ public interface LtVendorService {
 	Status approveFeedbackReject(ApproveFeedbackReject approveFeedbackReject);
 	
 	public ResponseEntity<Status> saveBulkVendors(@RequestBody InboxBulkInput inboxBulkInput);
-
-
+	
+	public boolean checkStatusIsPending(Long vendorId, Long approvalId,String token);
 
 
 }

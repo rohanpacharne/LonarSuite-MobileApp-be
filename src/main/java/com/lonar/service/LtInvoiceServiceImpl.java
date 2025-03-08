@@ -30,13 +30,20 @@ public class LtInvoiceServiceImpl implements LtInvoiceService,CodeMaster {
 	@Autowired
 	LtInvoiceDao ltInvoiceDao;
 	
+	@Autowired
+	LtNotificationService ltNotificationService;
+	
 	private final RestTemplate restTemplate = new RestTemplate();
 	long currentTimestamp = System.currentTimeMillis();
 
 	@Override
-	public LtInvoiceHeaders getInvoiceByHeaderById(Long headerId, String token) {
+	public ResponseEntity<LtInvoiceHeaders> getInvoiceByHeaderById(Long headerId,Long approvalId, String token) {
+		
+		boolean status = checkStatusIsPending(headerId, approvalId, token);
+		
 		String apiUrl = lVendorMasterIp + "/lvendormaster/API/invoiceheader/getInvoiceById/"
-                + headerId + "/" + currentTimestamp;		
+                + headerId + "/" + currentTimestamp;
+
 		try {
 	        
 	        HttpHeaders headers = new HttpHeaders();
@@ -52,8 +59,13 @@ public class LtInvoiceServiceImpl implements LtInvoiceService,CodeMaster {
 	                entity,
 	                LtInvoiceHeaders.class
 	        );
-
-	        return response.getBody(); 
+	        
+	        HttpHeaders responseHeaders = new HttpHeaders();
+	        responseHeaders.set("checkStatusIsPending", String.valueOf(status));  // Add the status (true/false) as a header
+	        
+	        int res = ltNotificationService.updateReadFlag(headerId, "INVOICE");
+	        
+	        return new ResponseEntity<>(response.getBody(), responseHeaders, HttpStatus.OK);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        throw new RuntimeException("Failed to fetch expense header: " + e.getMessage());
@@ -156,6 +168,37 @@ public class LtInvoiceServiceImpl implements LtInvoiceService,CodeMaster {
 	        e.printStackTrace();
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
+	}
+
+	@Override
+	public boolean checkStatusIsPending(Long headerId, Long approvalId,String token) {
+		// TODO Auto-generated method stub
+		String apiUrl = lVendorMasterIp + "/lvendormaster/API/invoiceheader/checkStatusIsPending/"+headerId+ "/"+approvalId+"/"+currentTimestamp;
+		try {
+	        // Set up headers with the access token
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.set("access_token", token);  // Set the access token in the header
+	        headers.set("Content-Type", "application/json");
+
+	        // No request body required, so use HttpEntity with just headers
+	        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+	        // Make the API call
+	        ResponseEntity<Boolean> response = restTemplate.exchange(
+	            apiUrl,
+	            HttpMethod.GET,  // Use GET since your URL is structured for a GET request
+	            entity,
+	            Boolean.class  // Expecting a boolean response
+	        );
+
+	        // Return the response body directly (boolean value)
+	        return response.getBody() != null && response.getBody();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;  // Return false if an error occurs
+	    }
+
 	}
 
 }

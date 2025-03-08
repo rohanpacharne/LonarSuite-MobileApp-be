@@ -26,8 +26,8 @@ public class LtVendorRestController {
 	LtVendorService ltVendorService;
 	
 	@PostMapping("/vendorById")
-    public LtMastVendors getInvoiceHeader(@RequestBody LtMastVendors ltMastVendors) {
-        return ltVendorService.getVendorByVendorId(ltMastVendors.getVendorId(), ltMastVendors.getToken());
+    public ResponseEntity<LtMastVendors> getInvoiceHeader(@RequestBody LtMastVendors ltMastVendors) {
+        return ltVendorService.getVendorByVendorId(ltMastVendors.getVendorId(), ltMastVendors.getApprovalId(), ltMastVendors.getToken());
 	}
 	
 	@PostMapping("/vendorApprovalByVendorId")

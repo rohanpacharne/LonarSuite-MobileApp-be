@@ -320,8 +320,8 @@ public class CombineAllApi implements CodeMaster {
   
 
     @PostMapping("/expenseHeaderById")
-    public LtExpExpenseHeaders getExpenseHeader(@RequestBody LtExpExpenseHeaders ltExpExpenseHeaders) {
-        return combineAllApiService.getExpenseHeaderById(ltExpExpenseHeaders.getExpHeaderId(), ltExpExpenseHeaders.getToken());
+    public ResponseEntity<LtExpExpenseHeaders> getExpenseHeader(@RequestBody LtExpExpenseHeaders ltExpExpenseHeaders) {
+        return combineAllApiService.getExpenseHeaderById(ltExpExpenseHeaders.getExpHeaderId(),ltExpExpenseHeaders.getApprovalId(), ltExpExpenseHeaders.getToken());
 }
     
     @PostMapping("/getApprovalHistoryByExpensehederId")

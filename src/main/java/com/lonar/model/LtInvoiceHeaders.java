@@ -45,6 +45,7 @@ public class LtInvoiceHeaders {
 	private String token;
 	
 	
+	
 	@Transient
 	private Long draw;
 
@@ -96,6 +97,17 @@ public class LtInvoiceHeaders {
 	@Transient
 	private String valueName;
 	
+	@Transient
+	private Long approvalId;
+	
+	public Long getApprovalId() {
+		return approvalId;
+	}
+
+	public void setApprovalId(Long approvalId) {
+		this.approvalId = approvalId;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -513,11 +525,12 @@ public class LtInvoiceHeaders {
 				+ creationDate + ", lastUpdateLogin=" + lastUpdateLogin + ", lastUpdatedBy=" + lastUpdatedBy
 				+ ", lastUpdateDate=" + lastUpdateDate + ", exchangeRate=" + exchangeRate + ", baseAmount=" + baseAmount
 				+ ", initiatorId=" + initiatorId + ", divisionId=" + divisionId + ", paytermId=" + paytermId
-				+ ", companyId=" + companyId + ", token=" + token + ", draw=" + draw + ", start=" + start + ", length="
-				+ length + ", iDate=" + iDate + ", revDate=" + revDate + ", columnNo=" + columnNo + ", sort=" + sort
-				+ ", buyer=" + buyer + ", invoiceStatus=" + invoiceStatus + ", type=" + type + ", vendorName="
-				+ vendorName + ", initiatorName=" + initiatorName + ", divisionName=" + divisionName + ", poNumber="
-				+ poNumber + ", poAmount=" + poAmount + ", valueCode=" + valueCode + ", valueName=" + valueName + "]";
+				+ ", companyId=" + companyId + ", token=" + token + ", approvalId=" + approvalId + ", draw=" + draw
+				+ ", start=" + start + ", length=" + length + ", iDate=" + iDate + ", revDate=" + revDate
+				+ ", columnNo=" + columnNo + ", sort=" + sort + ", buyer=" + buyer + ", invoiceStatus=" + invoiceStatus
+				+ ", type=" + type + ", vendorName=" + vendorName + ", initiatorName=" + initiatorName
+				+ ", divisionName=" + divisionName + ", poNumber=" + poNumber + ", poAmount=" + poAmount
+				+ ", valueCode=" + valueCode + ", valueName=" + valueName + "]";
 	}
 	
 }

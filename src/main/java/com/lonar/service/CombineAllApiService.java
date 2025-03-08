@@ -21,7 +21,7 @@ public interface CombineAllApiService {
 
 	LoginResponseDto login(String userName, String password);
 
-	LtExpExpenseHeaders getExpenseHeaderById(Long long1, String token);
+	ResponseEntity<LtExpExpenseHeaders> getExpenseHeaderById(Long long1, Long approvalId, String token);
 
 	List<LtExpenseApprovalHistory> getApprovalHistoryByExpensehederId(Long headerId, String token);
 	
@@ -32,5 +32,7 @@ public interface CombineAllApiService {
 	ResponseEntity<?> mobileLogin(@RequestBody Map<String, String> loginRequest,HttpServletResponse response);
 	
 	public ResponseEntity<Status> saveBulkExpenses(@RequestBody InboxBulkInput inboxBulkInput);
+	
+	public boolean checkStatusIsPending(Long long1, Long approvalId, String token);
 
 }

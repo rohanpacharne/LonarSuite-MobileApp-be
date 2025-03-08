@@ -26,8 +26,8 @@ public class LtInvoiceRestController {
 	LtInvoiceService ltInvoiceService;
 	
 	@PostMapping("/invoiceHeaderById")
-    public LtInvoiceHeaders getInvoiceHeader(@RequestBody LtInvoiceHeaders ltInvoiceHeaders) {
-        return ltInvoiceService.getInvoiceByHeaderById(ltInvoiceHeaders.getInvoiceHeaderId(), ltInvoiceHeaders.getToken());
+    public ResponseEntity<LtInvoiceHeaders> getInvoiceHeader(@RequestBody LtInvoiceHeaders ltInvoiceHeaders) {
+        return ltInvoiceService.getInvoiceByHeaderById(ltInvoiceHeaders.getInvoiceHeaderId(),ltInvoiceHeaders.getApprovalId() ,ltInvoiceHeaders.getToken());
 	}
 	
 	@PostMapping("/invoiceApprovalByHeaderId")

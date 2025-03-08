@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity; 
 import org.springframework.http.HttpHeaders; 
@@ -32,6 +33,9 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 
 	private final RestTemplate restTemplate = new RestTemplate();
 	
+	@Autowired
+	LtNotificationService ltNotificationService;
+	
 	@Override
 	public LoginResponseDto login(String userName, String password) {
 		// TODO Auto-generated method stub
@@ -41,8 +45,11 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 	long currentTimestamp = System.currentTimeMillis();
 	
 	@Override
-	public LtExpExpenseHeaders getExpenseHeaderById(Long headerId, String token) {
-		String apiUrl = "http://174.138.187.142:9098/lsuitemasters/API//expExpense/getExpenseHeaderByHeaderId/"
+	public ResponseEntity<LtExpExpenseHeaders> getExpenseHeaderById(Long headerId, Long approvalId,String token) {
+		
+		boolean status = checkStatusIsPending(headerId, approvalId, token);
+
+		String apiUrl = lSuiteMastersIp+"/lsuitemasters/API//expExpense/getExpenseHeaderByHeaderId/"
                 + headerId + "/" + currentTimestamp;		
 		try {
 	        
@@ -59,8 +66,13 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 	                entity,
 	                LtExpExpenseHeaders.class
 	        );
-
-	        return response.getBody(); 
+	        
+	        HttpHeaders responseHeaders = new HttpHeaders();
+	        responseHeaders.set("checkStatusIsPending", String.valueOf(status));  // Add the status (true/false) as a header
+	        
+	        int res = ltNotificationService.updateReadFlag(headerId, "EXPENSE");
+	        
+	        return new ResponseEntity<>(response.getBody(), responseHeaders, HttpStatus.OK);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        throw new RuntimeException("Failed to fetch expense header: " + e.getMessage());
@@ -71,7 +83,7 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 	@Override
 	public List<LtExpenseApprovalHistory> getApprovalHistoryByExpensehederId(Long headerId, String token) {
 
-		String url = "http://174.138.187.142:9098/lsuitemasters/API//ExpenseApprovalHistory/getApprovalHistoryByExpensehederId/"+
+		String url = lSuiteMastersIp+"/lsuitemasters/API//ExpenseApprovalHistory/getApprovalHistoryByExpensehederId/"+
 				headerId+ "/"+currentTimestamp ;
 		try {
 	        
@@ -107,7 +119,7 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 		String status = approveFeedbackReject.getStatus();
 		String remark = approveFeedbackReject.getRemark();
 		
-		String url ="http://174.138.187.142:9098/lsuitemasters/API//ExpenseApproval/updateStatusApproval";
+		String url =lSuiteMastersIp+"/lsuitemasters/API//ExpenseApproval/updateStatusApproval";
 		//String url = "http://174.138.187.142:9098/lsuitemasters/API//ExpenseApproval/updateStatusApproval";
 		//+empId+exAppId+exHeadId+status+remark;
            
@@ -224,5 +236,35 @@ public class CombineAllApiServiceImpl implements CombineAllApiService,CodeMaster
 	        e.printStackTrace();
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
+	}
+
+	@Override
+	public boolean checkStatusIsPending(Long headerId, Long approvalId, String token) {
+		// TODO Auto-generated method stub
+				String apiUrl = lSuiteMastersIp + "/lsuitemasters/API/expExpense/checkStatusIsPending/"+headerId+ "/"+approvalId+"/"+currentTimestamp;
+				try {
+			        // Set up headers with the access token
+			        HttpHeaders headers = new HttpHeaders();
+			        headers.set("access_token", token);  // Set the access token in the header
+			        headers.set("Content-Type", "application/json");
+
+			        // No request body required, so use HttpEntity with just headers
+			        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+			        // Make the API call
+			        ResponseEntity<Boolean> response = restTemplate.exchange(
+			            apiUrl,
+			            HttpMethod.GET,  // Use GET since your URL is structured for a GET request
+			            entity,
+			            Boolean.class  // Expecting a boolean response
+			        );
+
+			        // Return the response body directly (boolean value)
+			        return response.getBody() != null && response.getBody();
+
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        return false;  // Return false if an error occurs
+			    }
 	}
 }

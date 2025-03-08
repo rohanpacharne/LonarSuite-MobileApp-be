@@ -17,7 +17,7 @@ import com.lonar.model.VendorApproval;
 
 public interface LtInvoiceService {
 	
-	LtInvoiceHeaders getInvoiceByHeaderById(Long long1, String token);
+	ResponseEntity<LtInvoiceHeaders> getInvoiceByHeaderById(Long long1, Long approvalId,String token);
 	
 	List<LtVendorApproval> getApprovalByHeaderId(Long headerId, String token);
 	
@@ -26,6 +26,8 @@ public interface LtInvoiceService {
 	Long getPendingCount(String status1, String approvalId, InvoiceApproval input) throws Exception;
 	
 	public ResponseEntity<Status> saveBulkInvoices(@RequestBody InboxBulkInput inboxBulkInput);
+	
+	public boolean checkStatusIsPending(Long headerId, Long approvalId,String token);
 
 
 }
